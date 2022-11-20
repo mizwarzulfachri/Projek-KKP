@@ -5,13 +5,13 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div>
         <div class="max-w-6xl mx-auto py-10 sm:px-6 lg:px-8">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="block mb-8">
+                <div class="block mb-8 py-3">
                     <a href="{{ route('manager.create') }}" class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded">Tambah User</a>
                 </div>
-                <br/>
+
                 <div class="flex flex-col">
                     <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -69,7 +69,7 @@
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                 <a href="{{ route('manager.show', $user->id) }}" class="text-blue-600 hover:text-blue-900 mb-2 mr-2">View</a>
                                                 <a href="{{ route('manager.edit', $user->id) }}" class="text-indigo-600 hover:text-indigo-900 mb-2 mr-2">Edit</a>
-                                                <form class="inline-block" action="{{ route('manager.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                                                <form class="inline-block" action="{{ route('manager.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Apakah Anda tentu mau hapus {{ $user->name }}?');">
                                                     <input type="hidden" name="_method" value="DELETE">
                                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                                     <input type="submit" class="text-red-600 hover:text-red-900 mb-2 mr-2" value="Delete">

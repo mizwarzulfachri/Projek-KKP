@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 
 class ManagerController extends Controller
@@ -48,7 +49,10 @@ class ManagerController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        $manager = User::create($request->validated());
+        $validatedData = $request->validated();
+        $validatedData['password'] = Hash::make($validatedData['password']);
+
+        $manager = User::create($validatedData);
         $manager->roles()->sync($request->input('roles', []));
 
         return redirect()->route('manager.index');
@@ -75,7 +79,7 @@ class ManagerController extends Controller
      */
     public function edit(User $manager)
     {
-        abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 | Forbbidden');
+        //abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 | Forbbidden');
 
         $roles = Role::pluck('title', 'id');
 
@@ -93,10 +97,13 @@ class ManagerController extends Controller
      */
     public function update(UpdateUserRequest $request, User $manager)
     {
-        $manager->update($request->validated());
-        $manager->roles()->sync($request->input('title', []));
+        $validatedData = $request->validated();
+        $validatedData['password'] = Hash::make($validatedData['password']);
 
-        return redirect()->route('manager.index');
+        $manager->update($validatedData);
+        $manager->roles()->sync($request->input('roles', []));
+
+        return redirect()->route('manager.index')->with('status', '{{ $manager->password }}');
     }
 
     /**
@@ -107,7 +114,7 @@ class ManagerController extends Controller
      */
     public function destroy(User $manager)
     {
-        abort_if(Gate::denies('user_access', Response::HTTP_FORBIDDEN, '403 | Forbbidden'));
+        //abort_if(Gate::denies('user_access', Response::HTTP_FORBIDDEN, '403 | Forbbidden'));
 
         $manager->delete();
 
